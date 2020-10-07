@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home_nav"
+        android:title="Home"
+        android:icon="@drawable/ic_home_white"
+        />
+
+    <item
+        android:id="@+id/simulator_nav"
+        android:title="Simulator"
+        android:icon="@drawable/ic_casino_black"
+
+        />
+</menu>
