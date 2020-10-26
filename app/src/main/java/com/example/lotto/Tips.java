@@ -6,6 +6,8 @@ public class Tips {
 
     @SerializedName("id")
     private int id;
+    @SerializedName("name")
+    private String name;
     @SerializedName("number1")
     private int number1;
     @SerializedName("number2")
@@ -21,8 +23,9 @@ public class Tips {
     @SerializedName("numberSuperzahl")
     private int numberSuperzahl;
 
-    public Tips(int id, int number1, int number2, int number3, int number4, int number5, int number6, int numberSuperzahl) {
+    public Tips(int id, String name ,int number1, int number2, int number3, int number4, int number5, int number6, int numberSuperzahl) {
         this.id = id;
+        this.name = name;
         this.number1 = number1;
         this.number2 = number2;
         this.number3 = number3;
@@ -40,6 +43,10 @@ public class Tips {
 
     public int getId(){
         return this.id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public int getNumber1(){

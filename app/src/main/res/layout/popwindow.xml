@@ -20,6 +20,22 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="parent">
 
+        <EditText
+            android:id="@+id/tippName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:inputType="text"
+            android:layout_gravity="center"
+            android:text="Wähle einen Namen"
+            android:gravity="center"
+            android:textSize="24sp" />
+
+        <LinearLayout
+            android:id="@+id/textobenLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tippName">
 
         <TextView
             android:id="@+id/textoben"
@@ -28,6 +44,8 @@
             android:layout_gravity="center"
             android:text="Wähle 6 Zahlen aus"
             android:textSize="24sp" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/line1"
@@ -39,7 +57,7 @@
             android:paddingBottom="1.0dip"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/textoben">
+            android:layout_below="@id/textobenLayout">
 
 
             <Button

@@ -164,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     // Variablen die die getippten Zahlen speichern
     private int id = 0;
+    private String nameDesTipps;
     private int nummer1;
     private int nummer2;
     private int nummer3;
@@ -204,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     // Zahlen, die beim Klicken eines ListViewButtons gespeichert werden müssen
 
+    private String nameOnClick;
     private int zahlOnClick1;
     private int zahlOnClick2;
     private int zahlOnClick3;
@@ -485,13 +487,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 String json = jsonFileLesen("mytips.json");
                 Tips[] listeAllerTips = gson.fromJson(json, Tips[].class);
 
-
+                // Falls die Liste leer ist kann nichts verglichen werden
                 if (listeAllerTips.length != 0) {
 
 
-                    for (int i = 0; i < listeAllerTips.length; i++) {
+                    for (int i = 0; i < listeAllerTips.length; i++) {       // Es wird durch die gesamte Liste iteriert, um alle Tipps mit den gezogenen Zahlen zu vergleichen
 
                         id = listeAllerTips[i].getId();
+                        nameDesTipps = listeAllerTips[i].getName();
                         nummer1 = listeAllerTips[i].getNumber1();
                         nummer2 = listeAllerTips[i].getNumber2();
                         nummer3 = listeAllerTips[i].getNumber3();
@@ -502,9 +505,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
 
-                        gezogeneZahlenSingleton = Singelton.instance.getZahlenListe();
+                        gezogeneZahlenSingleton = Singelton.instance.getZahlenListe(); // Die gezogenen Zahlen wurden beim Thread 1 ins Singleton gespeichert
 
-                        //int gwgwrgwr = gezogeneZahlenSingleton[1];
+
 
 
                         // Die gezogenen Zahlen mit den getippten Zahlen vergleichen
@@ -575,7 +578,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         getippteZahlenBewertung[5] = boolnummer6;
 
 
-                        TipsUebersicht listeübersicht = new TipsUebersicht(getippteZahlen, getippteZahlenBewertung, nummerSuperzahl, boolnummerSuperzahl, countRichtige);
+                        TipsUebersicht listeübersicht = new TipsUebersicht(getippteZahlen, getippteZahlenBewertung, nummerSuperzahl, boolnummerSuperzahl, countRichtige, nameDesTipps);
 
                         // Wir befinden uns immer noch in der for-Schleife...jeder getippter Tipp wird also in die ArrayList gespeichert
                         alleTips.add(listeübersicht);
@@ -643,12 +646,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         @Override
                         public void run() {
 
-                            tipsListAdapter = new TipsListAdapter(context, R.layout.custom_row, alleTips, superzahl, boolnummerSuperzahl);
+                            tipsListAdapter = new TipsListAdapter(context, R.layout.custom_row, alleTips);
                             listView.setAdapter(tipsListAdapter);
 
                         }
                     });
-
+                    System.out.println("Thread 2 ist durchgelaufen! Yippy Yay Yey!");
                 }
             }
         };
@@ -1295,7 +1298,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             // Hier endet die If Bedingung: if (textFromWeb != null)
             // Das Programm muss ganz durchlaufen, um zu funktionieren
-
+            s
 
 
         }
@@ -1308,6 +1311,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         bottomNavigationView.setSelectedItemId(R.id.home_nav);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
+
+        System.out.println("Die Main ist durchgelaufen! Hurray!");
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
@@ -1404,16 +1409,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemClick(final AdapterView<?> parent, View view, final int position, long id) {
 
         System.out.println("Hallo, ich wurde angeklickt");
-
+        final TipsUebersicht item = (TipsUebersicht) parent.getItemAtPosition(position);
+        String nameVomTipp = item.getTippName();
 
         new AlertDialog.Builder(MainActivity.this)
                 .setTitle("Message")
-                .setMessage("Sind sie sicher, dass Sie diesen Tipp löschen wollen?")
+                .setMessage("Sind sie sicher, dass Sie diesen Tipp " + nameVomTipp + " löschen wollen?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        TipsUebersicht item = (TipsUebersicht) parent.getItemAtPosition(position);
 
+
+                        nameOnClick = item.getTippName();
                         zahlOnClick1 = item.getNummer1();
                         zahlOnClick2 = item.getNummer2();
                         zahlOnClick3 = item.getNummer3();
@@ -1432,15 +1439,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                         for (int i = 0; i < listeAllerTips.length; i++) {
 
-                            if (zahlOnClick1 == listeAllerTips[i].getNumber1())
-                                if (zahlOnClick2 == listeAllerTips[i].getNumber2())
-                                    if (zahlOnClick3 == listeAllerTips[i].getNumber3())
-                                        if (zahlOnClick4 == listeAllerTips[i].getNumber4())
-                                            if (zahlOnClick5 == listeAllerTips[i].getNumber5())
-                                                if (zahlOnClick6 == listeAllerTips[i].getNumber6())
-                                                    if (zahlOnClickSuperzahl == listeAllerTips[i].getNumberSuperzahl()) {
-                                                        indexZumÜberspringen = i;
-                                                        break;
+                            if (nameOnClick.equals(listeAllerTips[i].getName()))
+                                if (zahlOnClick1 == listeAllerTips[i].getNumber1())
+                                    if (zahlOnClick2 == listeAllerTips[i].getNumber2())
+                                        if (zahlOnClick3 == listeAllerTips[i].getNumber3())
+                                            if (zahlOnClick4 == listeAllerTips[i].getNumber4())
+                                                if (zahlOnClick5 == listeAllerTips[i].getNumber5())
+                                                    if (zahlOnClick6 == listeAllerTips[i].getNumber6())
+                                                        if (zahlOnClickSuperzahl == listeAllerTips[i].getNumberSuperzahl()) {
+                                                            indexZumÜberspringen = i;
+                                                            break;
                                                     }
                         }
 

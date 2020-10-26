@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.VideoView;
 
 import androidx.annotation.Nullable;
@@ -76,7 +77,10 @@ public class Pop extends Activity {
         final ArrayList<Integer> chosenNumbers = new ArrayList<>();
         final int[] supernumber = {0};
 
+        String[] mythologie = new String[100];
 
+        final EditText tippname = findViewById(R.id.tippName);
+        tippname.setText("Medusa");
 
         /* Initialisierung von
                 Cancel Button
@@ -100,7 +104,16 @@ public class Pop extends Activity {
                 else if (counterZahl[0] == 0 && counterSuperzahl[0] == 1) {
                     Snackbar.make(v, "Wähle noch eine Superzahl aus", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
-                } else {
+                }
+                else if (tippname.getText().equals("")) {
+                    Snackbar.make(v, "Wähle einen Namen", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+                else if (tippname.getText().length() > 20) {
+                    Snackbar.make(v, "Der Name darf nur 20 Zeichen lang sein", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+                else {
 
                     for (int i = 1; i < 50; i++) {
                         if (activation[i] == true) {
@@ -142,6 +155,10 @@ public class Pop extends Activity {
 
 
                     // JSON
+
+                    // Name vorbereiten
+
+                    String nameTipp = tippname.getText().toString();
                     // Alle Zahlen vorbereiten
 
                     int zahl1 = chosenNumbers.get(0);
@@ -194,7 +211,7 @@ public class Pop extends Activity {
                         // JSON File ist leer oder existiert nicht
 
                         List<Tips> alleTips = new ArrayList<>();
-                        alleTips.add(new Tips(0, zahl1, zahl2, zahl3, zahl4, zahl5, zahl6, superzahl));
+                        alleTips.add(new Tips(0, nameTipp, zahl1, zahl2, zahl3, zahl4, zahl5, zahl6, superzahl));
 
                         String jsonText = gson.toJson(alleTips);
 
@@ -213,7 +230,7 @@ public class Pop extends Activity {
                             alleTips.add(listeAllerTips[i]);
                         }
 
-                        alleTips.add(new Tips(listeAllerTips.length, zahl1, zahl2, zahl3, zahl4, zahl5, zahl6, superzahl));
+                        alleTips.add(new Tips(listeAllerTips.length, nameTipp,zahl1, zahl2, zahl3, zahl4, zahl5, zahl6, superzahl));
 
                         String jsonText = gson.toJson(alleTips);
 

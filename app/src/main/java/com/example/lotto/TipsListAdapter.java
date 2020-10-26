@@ -28,19 +28,17 @@ public class TipsListAdapter extends ArrayAdapter<TipsUebersicht> {
     private int superzahl;
 
 
-    public TipsListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<TipsUebersicht> objects, int superzahl, boolean boolnummerSuperzahl) {
+    public TipsListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<TipsUebersicht> objects) {
         super(context, resource, objects);
         mContext = context;
         mResource = resource;
-
-        this.superzahl = superzahl;
-        this.boolnummerSuperzahl = boolnummerSuperzahl;
 
     }
 
     public View getView(int position, View convertView, ViewGroup parent){
         //Alle Informationen holen
 
+        String name = getItem(position).getTippName();
         int nummer1 = getItem(position).getNummer1();
         int nummer2 = getItem(position).getNummer2();
         int nummer3 = getItem(position).getNummer3();
@@ -70,6 +68,9 @@ public class TipsListAdapter extends ArrayAdapter<TipsUebersicht> {
 
 
         // TextViews erstellen
+
+        TextView textName = (TextView) convertView.findViewById(R.id.nameDesTipps);
+        textName.setText(name);
 
         TextView textView1 = (TextView) convertView.findViewById(R.id.rowNumber1);
         if (boolnummer1 == true) {

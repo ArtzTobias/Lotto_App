@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 public class TipsUebersicht {
 
+    // Name des Tipps
+    private String tippName;
+
     // Alle Zahlen, die getippt wurden
     private int nummer1;
     private int nummer2;
@@ -24,8 +27,9 @@ public class TipsUebersicht {
 
     private int countRichtige;
 
-    public TipsUebersicht (Integer[] listeDerTipps, Boolean[] richtigeZahlen, int superzahl, boolean boolSuperzahl, int countRichtige) {
+    public TipsUebersicht (Integer[] listeDerTipps, Boolean[] richtigeZahlen, int superzahl, boolean boolSuperzahl, int countRichtige, String name) {
 
+        tippName = name;
         nummer1 = listeDerTipps[0];
         nummer2 = listeDerTipps[1];
         nummer3 = listeDerTipps[2];
@@ -44,6 +48,14 @@ public class TipsUebersicht {
 
         this.countRichtige = countRichtige;
 
+    }
+
+    public String getTippName() {
+        return tippName;
+    }
+
+    public void setTippName(String tippName) {
+        this.tippName = tippName;
     }
 
     public int getCountRichtige(){

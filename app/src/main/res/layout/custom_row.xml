@@ -11,6 +11,14 @@
         android:orientation="horizontal"
         android:background="@drawable/custom_row_background">
 
+        <TextView
+            android:id="@+id/nameDesTipps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="17dp"
+            android:textColor="#F6F4F4"/>
+
+
         <LinearLayout
             android:id="@+id/innerLayout"
             android:layout_width="match_parent"
