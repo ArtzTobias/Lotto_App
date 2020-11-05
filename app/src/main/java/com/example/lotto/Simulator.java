@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,6 +53,8 @@ public class Simulator extends Activity {
     //  8 = 6 Richtige
     //  9 = 6 Richtige & Superzahl
 
+    double[] alleGewinne = {0.00, 5.00, 10.48, 20.95, 42.42, 190.90, 3340.68, 10022.03, 574596.53, 8949642.24};
+
 
     private TextView modusTextView;
     private Button playButton;
@@ -68,7 +71,7 @@ public class Simulator extends Activity {
     private Runnable simulateNumbers;
     private boolean simulationsThreadGestartet = false;
 
-    private TextView anzahlVersucheTextView;
+
 
     private TextView nummer1TextView;
     private TextView nummer2TextView;
@@ -118,7 +121,27 @@ public class Simulator extends Activity {
 
     private boolean mainloopCondition = true;
 
+    // Gewinne, Kosten und Summe
+    private TextView gewinneTextView;
+    private TextView kostenTextView;
+    private TextView summeTextView;
 
+    // Versuche, Wochen und Jahre
+    private TextView anzahlVersucheTextView;
+    private TextView anzahlWochenTextView;
+    private TextView anzahlJahreTextView;
+
+    private int gewinn = 0;
+    private double kostenGesamt = 0.0;
+    private double summe = 0.0;
+
+    private int anzahlWochen = 0;
+    private double anzahlJahre = 0.0;
+
+    // Anzahl aller Tipps
+    private TextView anzahlTippsTextView;
+    private int anzahlAllerTipps;
+    private double kostenProTipp = 1.20;
 
 
 
@@ -133,6 +156,14 @@ public class Simulator extends Activity {
         // Alle Buttons und TextViews miteinander verknüpfen
         modusTextView = findViewById(R.id.modus_Vorschau_textView);
         modusTextView.setText("Kein Modus ausgewählt!");
+
+        // Anzahl aller Tipps implementieren
+        anzahlTippsTextView = findViewById(R.id.anzahlTipps);
+
+        // Gewinn, Kosten und Summe implementieren
+        gewinneTextView = findViewById(R.id.summeGewinn);
+        kostenTextView = findViewById(R.id.summeKosten);
+        summeTextView = findViewById(R.id.summeSumme);
 
         // ModusButton implementieren
         modusButton = findViewById(R.id.modus_button);
@@ -149,6 +180,7 @@ public class Simulator extends Activity {
 
                                 modusNummer = which;
                                 modusTextView.setText(alleModi[which]);
+                                gewinneTextView.setText(doubletoEuro(alleGewinne[which]));
                             }
                         })
                 .show();
@@ -156,6 +188,10 @@ public class Simulator extends Activity {
 
             }
         });
+
+        // TextView Wochen und Jahre
+        anzahlWochenTextView = findViewById(R.id.wochen_counter_display);
+        anzahlJahreTextView = findViewById(R.id.jahre_counter_display);
 
         // TextView für Anzahl der Versuche implementieren
         anzahlVersucheTextView = findViewById(R.id.versuche_counter_display);
@@ -170,11 +206,23 @@ public class Simulator extends Activity {
         nummer6TextView = findViewById(R.id.simulation_nummer6);
         nummerSuperzahlTextView = findViewById(R.id.simulation_nummerSuperzahl);
 
+
+
         // Alle getippten Zahlen auslesen
         Gson gson = new Gson();
 
         String json = jsonFileLesen("mytips.json");
         listeAllerTips = gson.fromJson(json, Tips[].class);
+
+        // Anzahl aller Tipps errechnen
+        anzahlAllerTipps = listeAllerTips.length;
+        anzahlTippsTextView.setText(anzahlAllerTipps);
+
+        // Gesamtkosten berechnen
+        kostenGesamt = anzahlAllerTipps * kostenProTipp;
+        kostenTextView.setText(doubletoEuro(kostenGesamt));
+
+
 
         // PlayButton implementieren
         playButton = findViewById(R.id.playButton);
@@ -220,11 +268,13 @@ public class Simulator extends Activity {
                 }
 
                 else if (simulationsThreadGestartet == false) {
+                    playButton.setActivated(true);
                     killThread = false;
                     simulationsThread = new Thread(simulateNumbers);
                     simulationsThread.start();
                     playButton.setText("PAUSE");
                 } else {
+                    playButton.setActivated(false);
                     killThread = true;
                     simulationsThread.interrupt();
                     playButton.setText("START");
@@ -235,6 +285,9 @@ public class Simulator extends Activity {
 
         // ListView implementieren
         listView = findViewById(R.id.listviewMyTips);
+
+
+
 
         simulateNumbers = new Runnable() {
             @Override
@@ -583,6 +636,14 @@ public class Simulator extends Activity {
 
         return null;
 
+    }
+
+    public String doubletoEuro (double wert) {
+        String country = "DE";
+        String language = "de";
+        String euroWert = NumberFormat.getCurrencyInstance(Locale.GERMANY).format(wert);
+
+        return euroWert;
     }
 
 }

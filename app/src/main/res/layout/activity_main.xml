@@ -36,13 +36,6 @@
         android:layout_marginBottom="70dp"
         app:srcCompat="@android:drawable/ic_dialog_email" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/NavigationbarBottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/Content"
-        android:layout_gravity="bottom"
-        app:menu="@menu/menu_nav"/>
 
 
 
