@@ -34,7 +34,8 @@
         android:layout_gravity="bottom|end"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="70dp"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:foreground="@mipmap/ic_add_button"
+        app:backgroundTint="#FFB500" />
 
 
 

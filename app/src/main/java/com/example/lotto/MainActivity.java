@@ -146,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private ArrayList<Button> buttons;
 
     private boolean firstThreadFinished = false;
+    private boolean secondThreadFinished = false;
 
     // ListView die alle Einträge (Tips) enthält
     private ListView listView;
@@ -218,6 +219,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private TipsListAdapter tipsListAdapter;
 
     private int buttonNumber = 0;
+
+    private TextView gezogeneZahl1TextView;
+    private TextView gezogeneZahl2TextView;
+    private TextView gezogeneZahl3TextView;
+    private TextView gezogeneZahl4TextView;
+    private TextView gezogeneZahl5TextView;
+    private TextView gezogeneZahl6TextView;
+    private TextView gezogeneZahlSuperzahlTextView;
+
+    private ThreadsAbgeschlossen threadsAbgeschlossen;
 
     public MainActivity() {
     }
@@ -425,11 +436,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+
+                        // Hier werden die Zahlen zugewiesen
+
+                        gezogeneZahl1TextView = findViewById(R.id.zahlnummer1);
+                        gezogeneZahl2TextView = findViewById(R.id.zahlnummer2);
+                        gezogeneZahl3TextView = findViewById(R.id.zahlnummer3);
+                        gezogeneZahl4TextView = findViewById(R.id.zahlnummer4);
+                        gezogeneZahl5TextView = findViewById(R.id.zahlnummer5);
+                        gezogeneZahl6TextView = findViewById(R.id.zahlnummer6);
+                        gezogeneZahlSuperzahlTextView = findViewById(R.id.zahlnummerSuperzahl);
+
+                        gezogeneZahl1TextView.setText(gezogeneZahlenWEB[1] + "");
+                        gezogeneZahl2TextView.setText(gezogeneZahlenWEB[2] + "");
+                        gezogeneZahl3TextView.setText(gezogeneZahlenWEB[3] + "");
+                        gezogeneZahl4TextView.setText(gezogeneZahlenWEB[4] + "");
+                        gezogeneZahl5TextView.setText(gezogeneZahlenWEB[5] + "");
+                        gezogeneZahl6TextView.setText(gezogeneZahlenWEB[6] + "");
+                        gezogeneZahlSuperzahlTextView.setText(superzahl + "");
+
+                        /*
                         gezogeneZahlen = findViewById(R.id.gezogeneZahlen);
                         gezogeneZahlen.setText(gezogeneZahlenFürTextView);
 
                         gezogeneSuperzahl = findViewById(R.id.gezogeneSuperzahl);
                         gezogeneSuperzahl.setText(gezogeneSuperzahlFürTextView);
+
+                         */
 
                     }
                 });
@@ -439,6 +472,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 firstThreadFinished = true;
 
+                Singelton.instance.setThread1_fertig(firstThreadFinished);
+
                 // Mit JSON Liste erstellen und anschließend Ergebnisse abgleichen
 
             }
@@ -446,8 +481,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         // TextViews für das Singleton vorbereiten
         datumTextView = findViewById(R.id.Datum);
+
+        gezogeneZahl1TextView = findViewById(R.id.zahlnummer1);
+        gezogeneZahl2TextView = findViewById(R.id.zahlnummer2);
+        gezogeneZahl3TextView = findViewById(R.id.zahlnummer3);
+        gezogeneZahl4TextView = findViewById(R.id.zahlnummer4);
+        gezogeneZahl5TextView = findViewById(R.id.zahlnummer5);
+        gezogeneZahl6TextView = findViewById(R.id.zahlnummer6);
+        gezogeneZahlSuperzahlTextView = findViewById(R.id.zahlnummerSuperzahl);
+
+        /*
         gezogeneZahlen = findViewById(R.id.gezogeneZahlen);
         gezogeneSuperzahl = findViewById(R.id.gezogeneSuperzahl);
+
+         */
+
 
         // Die Funktion füllt die oben erstellen TextViews
         displayState();
@@ -488,6 +536,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Tips[] listeAllerTips = gson.fromJson(json, Tips[].class);
 
                 // Falls die Liste leer ist kann nichts verglichen werden
+
+                if (listeAllerTips != null) {
+
                 if (listeAllerTips.length != 0) {
 
 
@@ -504,10 +555,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         nummerSuperzahl = listeAllerTips[i].getNumberSuperzahl();
 
 
-
                         gezogeneZahlenSingleton = Singelton.instance.getZahlenListe(); // Die gezogenen Zahlen wurden beim Thread 1 ins Singleton gespeichert
-
-
 
 
                         // Die gezogenen Zahlen mit den getippten Zahlen vergleichen
@@ -651,658 +699,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                         }
                     });
-                    System.out.println("Thread 2 ist durchgelaufen! Yippy Yay Yey!");
+
                 }
+                }
+                    System.out.println("Thread 2 ist durchgelaufen! Yippy Yay Yey!");
+                    secondThreadFinished = true;
+                    Singelton.instance.setThread2_fertig(secondThreadFinished);
+
             }
         };
 
         Thread thread2 = new Thread(createList);
         thread2.start();
 
-
-        /*
-
-        for(int i = 0; i < 8; i++) {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                System.out.println("Thread sleep wurde abgebrochen");
-            }
-            textfromWeb = webItems.getTextfromWeb();
-            if (textfromWeb != null){
-                System.out.println("Bei Versuch Nummer: " + (i + 1));
-                break;
-            }
-        }
-
-
-
-        // Falls keine Internetverbindung besteht muss die App geschlossen werden
-
-        if (textfromWeb == null) {
-
-            // Ladebalken unterbrechen (fehlt noch)
-            //loadingDialog.dismissLoadingDialog();
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Keine Internetverbindung. Bitte starten Sie die App erneut.")
-                    .setCancelable(false)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                            // App wird geschlossen
-
-                            finish();
-                            System.exit(0);
-                        }
-                    });
-            alert = builder.create();
-            alert.show();
-
-        }
-
-
-
-
-
-
-
-
-        if (textfromWeb != null) {
-
-            //System.out.println("WebText von MainActivity: " + textfromWeb);
-            System.out.println("WebText von MainActivity (Länge): " + textfromWeb.length());
-
-            String regex1 = "\\d{2}" + "\\p{Punct}" + "\\d{2}" + "\\p{Punct}" + "\\d{4}";
-
-            Matcher m1 = Pattern.compile(regex1).matcher(textfromWeb);
-
-            if (m1.find()) {
-                System.out.println("Das ist das gefundene Datum in WEB 1: " + m1.group(0));
-            } else {
-                System.out.println("Kein Datum gefunden");
-            }
-
-            String datumZiehung = m1.group(0);
-
-
-            // Den Tag aus dem Datum bekommen
-
-            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-
-            Date date = null;
-
-            try {
-                date = format.parse(datumZiehung);
-                //System.out.println("Hat das geklappt mit dem Datum? " + date);
-            } catch (ParseException e) {
-                System.out.println("Kein datum in Activity main gefunden");
-            }
-
-
-            String dayOfTheWeek = (String) android.text.format.DateFormat.format("EEEE", date);
-
-            //System.out.println("Das ist der Tag aus dem WEB: " + dayOfTheWeek);
-
-            // String Nr1. für die File4
-
-            datum_und_Tag_WEB = "Ziehung vom " + dayOfTheWeek + ", " + datumZiehung;
-
-            TextView datumTextView = findViewById(R.id.Datum);
-            datumTextView.setText(datum_und_Tag_WEB);
-
-
-            //Gezogene Zahlen herausfiltern
-
-            gezogeneZahlenWEB = new Integer[7];
-
-            Boolean[] storage = new Boolean[50];
-            Arrays.fill(storage, Boolean.FALSE);
-
-
-            for (int i = 0; i < 50; i++) {
-                if (textfromWeb.contains("LottoBall__circle\">" + i + "<")) {
-                    System.out.println("Die gezogene Zahl ist: " + i);
-                    storage[i] = true;
-
-                }
-            }
-            for (int i = 0; i < 10; i++) {
-                if (textfromWeb.contains("LottoBall__circle\">" + i + "</span></div></div></div>")) {
-                    System.out.println("Die Superzahl ist: " + i);
-                    superzahl = i;
-                }
-            }
-
-            int zählt_true_in_storage = 0;
-
-            int eintragFürGezogene = 0;
-
-            if (superzahl == -1) {
-                System.out.println("Daten konnten nicht ermittelt werden");
-            } else {
-                for (int i = 0; i < 50; i++) {
-                    if (storage[i] == true) {
-                        ++zählt_true_in_storage;
-                    }
-                }
-                if (zählt_true_in_storage == 7) {
-                    for (int i = 0; i < 50; i++) {
-                        if (storage[i] == true && (i != superzahl)) {
-                            gezogeneZahlenWEB[++eintragFürGezogene] = i;
-                        }
-                    }
-                } else if (zählt_true_in_storage == 6) {
-                    for (int i = 0; i < 50; i++) {
-                        if (storage[i]) {
-                            gezogeneZahlenWEB[++eintragFürGezogene] = i;
-                        }
-                    }
-                } else {
-                    System.out.println("Mehr bzw. weniger trues im Storage als angenommen. Fehler beim Laden");
-                }
-
-            }
-
-
-            for (int i = 1; i < 7; i++) {
-                System.out.println("Einträge in gezogeneZahlenWeb Nr. " + i + ": " + gezogeneZahlenWEB[i]);
-            }
-
-
-
-            gezogeneZahlenFürTextView = "Zahlen: " + gezogeneZahlenWEB[1] + " " + gezogeneZahlenWEB[2] + " " + gezogeneZahlenWEB[3] + " " + gezogeneZahlenWEB[4] + " " + gezogeneZahlenWEB[5] + " " + gezogeneZahlenWEB[6];
-            gezogeneSuperzahlFürTextView = "Superzahl: " + superzahl;
-
-
-
-            // Daten in die Textviews schreiben
-
-            TextView gezogeneZahlen = findViewById(R.id.gezogeneZahlen);
-            gezogeneZahlen.setText(gezogeneZahlenFürTextView);
-
-            TextView gezogeneSuperzahl = findViewById(R.id.gezogeneSuperzahl);
-            gezogeneSuperzahl.setText(gezogeneSuperzahlFürTextView);
-
-        }
-
-        //Ende relevanter Daten
-        //
-        //
-        //
-        //
-
-
-
-            if (textfromWeb != null) {
-            //Access a file using a stream
-
-
-            Intent intent = getIntent();
-
-
-            String value = intent.getStringExtra("key");
-
-            System.out.println("DAS IST DER *VALUE* WERT: " + value);
-
-
-            // Deklarieren der beiden Files
-            file = new File(context.getFilesDir(), filname);
-            file2 = new File(context.getFilesDir(), secondFile);
-            fileForDeletedButton = new File(context.getFilesDir(), junkFile);
-
-
-            // Überprüfen, ob der String "value" der Inhalt des gelöschten Buttons ist
-            // die 3 nach den Namen (z.B.: fis3) steht für das bearbeiten der 3. File (fileForDeletedButton / junkFile)
-
-            String inhaltJunk = null;
-
-            // Der String "value" darf nicht leer sein, sonst kommt eine NullPointerException
-
-            if (value != null) {
-
-                try {
-                    FileInputStream fis3 = context.openFileInput(junkFile);
-                    InputStreamReader inputStreamReader3 = new InputStreamReader(fis3, StandardCharsets.UTF_8);
-                    StringBuilder stringBuilder3 = new StringBuilder();
-
-                    try (BufferedReader reader3 = new BufferedReader(inputStreamReader3)) {
-
-                        String lineX3 = reader3.readLine();
-
-                        while (lineX3 != null) {
-                            stringBuilder3.append(lineX3).append("\n");
-                            lineX3 = reader3.readLine();
-                        }
-                    } catch (IOException g) {
-                        System.out.println("IO Exception");
-                    } finally {
-                        inhaltJunk = stringBuilder3.toString();
-
-                        System.out.println("Das ist der Inhalt des gelöschten Buttons: " + inhaltJunk);
-                    }
-
-                } catch (FileNotFoundException e) {
-                    System.out.println("File3 not found um Inhalt zu lesen");
-                }
-
-                // Überprüft, ob die Inhalte des gelöschten Buttons wirklich mit dem String "value" übereinstimmen
-
-
-                if (!(inhaltJunk.isEmpty())) {
-
-                    value = null;
-
-                    // Löschen des Inhalts der File3 (JunkFile) da sonst der gleich gewählte Tipp nicht angenommen werden kann
-
-                    try {
-                        //Leeren der File3
-
-                        PrintWriter printwriter = new PrintWriter(fileForDeletedButton);
-                        printwriter.print("");
-                        printwriter.close();
-
-                        System.out.println("ICH HABE DEN INHALT DER FILE3 GELÖSCHT");
-
-                    } catch (FileNotFoundException e) {
-                        System.out.println("File3 zum leeren des Inhalts nicht gefunden");
-                    }
-
-                }
-
-            }
-
-
-            if (buttonNumber != 0) {
-                buttonNumber = 0;
-            }
-
-
-            System.out.println("vor der if");
-
-            if (value != null && counterforDelete == 0) {
-
-
-
-
-                String fileContents = value;
-
-
-                // Überprüfen, ob die getippten Zahlen bereits in der File1 enthalten sind
-                String inhalt = null;
-
-                try {
-                    FileInputStream fis = context.openFileInput(filname);
-                    InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
-                    StringBuilder stringBuilder = new StringBuilder();
-
-                    try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
-
-                        String lineX = reader.readLine();
-
-                        while (lineX != null) {
-                            stringBuilder.append(lineX).append("\n");
-                            lineX = reader.readLine();
-                        }
-                    } catch (IOException g) {
-                        System.out.println("IO Exception");
-                    } finally {
-                        inhalt = stringBuilder.toString();
-                    }
-
-                } catch (FileNotFoundException e) {
-                    System.out.println("File not found");
-                }
-
-                if (!(inhalt == null)) {
-
-                    if (inhalt.contains(fileContents)) {
-
-                        View parentLayout = findViewById(R.id.listviewMyTips);
-
-                        Snackbar.make(parentLayout, "Bereits in der File enthalten", Snackbar.LENGTH_LONG)
-                                .show();
-                    }
-                } else {
-
-                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-                        writer.write(fileContents + "\n");
-                    } catch (FileNotFoundException e) {
-                        System.out.println("File not found");
-                    } catch (IOException f) {
-                        System.out.println("IOException");
-                    }
-
-                    System.out.println("Das wurde in die File geschrieben weil sie nicht in der File enthalten ist: (line 499)" + fileContents);
-                }
-
-                mainLayout = (LinearLayout) findViewById(R.id.listviewMyTips);
-                inflater = getLayoutInflater();
-                row = inflater.inflate(R.layout.row, mainLayout, false);
-                button = (Button) row.findViewById(R.id.ListButton);
-
-
-                System.out.println("nach der if");
-            } else {
-                counterforDelete = 0;
-            }
-
-            try {
-
-
-                ArrayList<Button> buttons = new ArrayList<>();
-
-
-                FileInputStream fis = context.openFileInput(filname);
-                InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
-                StringBuilder stringBuilder = new StringBuilder();
-
-                try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
-
-                    mainLayout = (LinearLayout) findViewById(R.id.listviewMyTips);
-                    inflater = getLayoutInflater();
-                    row = inflater.inflate(R.layout.row, mainLayout, false);
-                    button = (Button) row.findViewById(R.id.ListButton);
-                    //mainLayout.addView(row);
-
-
-                //row = inflater.inflate(R.layout.row, mainLayout, false);
-                //button = (Button) row.findViewById(R.id.ListButton);
-                //mainLayout.addView(row);
-
-                    String line = reader.readLine();
-
-                    while (line != null) {
-                        stringBuilder.append(line).append("\n");
-
-                        //mainLayout =  (LinearLayout) findViewById(R.id.listviewMyTips);
-                        //inflater = getLayoutInflater();
-                        row = inflater.inflate(R.layout.row, null, false);
-                        button = (Button) row.findViewById(R.id.ListButton);
-
-
-                        //edited on 01.05.2020
-                        // TextView für die Anzahl der Richtigen
-                        textView = (TextView) row.findViewById(R.id.listTextView);
-                        tvList.add(textView);
-
-                        // TextView für die Anzahl der richtigen Superzahl
-                        textViewSuperzahl = (TextView) row.findViewById(R.id.listTextViewSuperzahl);
-                        tvListSuperzahl.add(textViewSuperzahl);
-
-
-                        //row = inflater.inflate(R.layout.row, null, false);
-                        //button = (Button) row.findViewById(R.id.ListButton);
-
-                        buttons.add(button);
-                        buttons.get(buttonNumber).setTag(buttonNumber);
-                        System.out.println("Iteriere buttonNumber: " + buttonNumber);
-                        ((Button) buttons.get(buttonNumber)).setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(final View v) {
-
-                                new AlertDialog.Builder(MainActivity.this)
-                                        .setTitle("Message")
-                                        .setMessage("Sind sie sicher, dass Sie diesen Tipp löschen wollen?")
-                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-
-
-                                                try {
-                                                    //Leeren der File2
-
-                                                    PrintWriter printwriter = new PrintWriter(file2);
-                                                    printwriter.print("");
-                                                    printwriter.close();
-
-                                                    System.out.println("ICH HABE DEN INHALT DER FILE2 GELÖSCHT");
-
-                                                } catch (FileNotFoundException e) {
-                                                    System.out.println("File2 zum leeren des Inhalts nicht gefunden");
-                                                }
-
-                                                try {
-
-                                                    //Inhalt wird in eine zweite File geschrieben
-
-                                                    final Context context = getApplicationContext();
-
-
-                                                    FileInputStream fis = context.openFileInput(filname);
-                                                    InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
-                                                    StringBuilder stringBuilder = new StringBuilder();
-
-                                                    BufferedReader reader = new BufferedReader(inputStreamReader);
-
-                                                    BufferedWriter writer = new BufferedWriter(new FileWriter(file2, true));
-
-
-                                                    Button b = (Button) v;
-                                                    String buttonText = b.getText().toString();
-
-                                                    System.out.println("Das war in der View:" + buttonText);
-
-                                                    String currentLine;
-
-                                                    while ((currentLine = reader.readLine()) != null) {
-
-                                                        //String trimmedLine = currentLine.trim();
-
-                                                        if (currentLine.equals(buttonText)) {
-
-                                                            // Löschen des Inhalts der File3 (JunkFile) da sonst der gleich gewählte Tipp nicht angenommen werden kann
-
-                                                            try {
-                                                                //Leeren der File3
-
-                                                                PrintWriter printwriter = new PrintWriter(fileForDeletedButton);
-                                                                printwriter.print("");
-                                                                printwriter.close();
-
-                                                                System.out.println("ICH HABE DEN INHALT DER FILE3 GELÖSCHT (Löschen)");
-
-                                                            } catch (FileNotFoundException e) {
-                                                                System.out.println("File3 zum leeren des Inhalts nicht gefunden (Löschen)");
-                                                            }
-
-                                                            // Buttontext wird in die File3 geschrieben
-
-                                                            try (BufferedWriter writer3 = new BufferedWriter(new FileWriter(fileForDeletedButton, true))) {
-                                                                writer3.write(buttonText + "\n");
-                                                            } catch (FileNotFoundException e) {
-                                                                System.out.println("File3 not found");
-                                                            } catch (IOException f) {
-                                                                System.out.println("IOException in File 3");
-                                                            }
-
-                                                            continue;
-                                                        }
-                                                        System.out.println("1. Das ist der Buttontext in der while schleife: " + buttonText);
-
-                                                        writer.write(currentLine + "\n");
-                                                    }
-
-
-                                                    writer.close();
-                                                    reader.close();
-
-
-                                                } catch (FileNotFoundException e) {
-                                                    System.out.println("File not found (schreiben in die zweite file)");
-                                                } catch (IOException e) {
-                                                    System.out.println("IOException (schreiben in die zweite file)");
-                                                }
-
-                                                try {
-                                                    //Leeren der File1
-
-                                                    PrintWriter printwriter = new PrintWriter(file);
-                                                    printwriter.print("");
-                                                    printwriter.close();
-
-                                                    System.out.println("ICH HABE DEN INHALT DER FILE1 GELÖSCHT");
-
-                                                } catch (FileNotFoundException e) {
-                                                    System.out.println("File1 zum leeren des Inhalts nicht gefunden");
-                                                }
-
-                                                try {
-
-                                                    // Schreibe den neuen Inhalt der zweiten File in die erste File
-                                                    // liest zweite file, da da der neue Inhalt steht
-
-                                                    final Context context = getApplicationContext();
-
-
-                                                    FileInputStream fis2 = context.openFileInput(secondFile);
-                                                    InputStreamReader inputStreamReader2 = new InputStreamReader(fis2, StandardCharsets.UTF_8);
-                                                    StringBuilder stringBuilder2 = new StringBuilder();
-
-                                                    BufferedReader reader2 = new BufferedReader(inputStreamReader2);
-
-                                                    // Schreibt wieder in die erste file
-                                                    BufferedWriter writer2 = new BufferedWriter(new FileWriter(file, true));
-
-                                                    String newLine = reader2.readLine();
-
-                                                    while (newLine != null) {
-                                                        writer2.write(newLine + "\n");
-                                                        newLine = reader2.readLine();
-                                                    }
-
-                                                    reader2.close();
-                                                    writer2.close();
-
-                                                } catch (FileNotFoundException e) {
-                                                    e.printStackTrace();
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
-                                                }
-
-
-                                                System.out.println("nach der Bearbeitung");
-
-
-                                                mainLayout = (LinearLayout) findViewById(R.id.listviewMyTips);
-                                                mainLayout.removeViewAt((Integer) v.getTag());
-
-                                                ++counterforDelete;
-
-                                                Intent intent = getIntent();
-                                                finish();
-                                                startActivity(intent);
-
-
-
-
-                                            //ViewGroup parentview = (ViewGroup) v.getParent();
-                                            //parentview.removeView(v);
-
-
-                                            }
-
-
-                                        })
-                                        .setNegativeButton(android.R.string.no, null)
-                                        .setIcon(android.R.drawable.ic_dialog_alert)
-                                        .show();
-                            }
-                        });
-                        buttons.get(buttonNumber).setText(line);
-
-
-                        //edited am 01.05.2020
-
-                        counterRichtige = 0;
-                        counterSuperzahl = 0;
-
-                        gefundeneSuperzahl = -1;
-
-                        // Inhalt des Buttons
-
-                        inhaltButton = (String) buttons.get(buttonNumber).getText();
-
-
-                        // Superzahl wird gesucht
-
-                        for (int i = 0; i < 10; i++) {
-
-                            if (inhaltButton.contains("Superzahl: " + i)) {
-                                gefundeneSuperzahl = i;
-                            }
-                        }
-
-                        String remove = "Superzahl: " + gefundeneSuperzahl;
-
-                        // Abgleich der Superzahl mit der gezogenen Superzahl
-
-                        if (remove.contains(Integer.toString(superzahl))) {
-                            ++counterSuperzahl;
-                        }
-
-                        // Superzahl wird aus dem kopierten Buttontext entfernt, damit die 6 getippten Zahlen verglichen werden können
-
-                        inhaltButton = removeWords(inhaltButton, remove);
-
-                        System.out.println("Das ist der neue Inhalt des Buttons: " + inhaltButton);
-
-                        // Die 6 Zahlen werden verglichen
-
-                        for (int i = 1; i < 7; i++) {
-
-                            if (inhaltButton.contains(Integer.toString(gezogeneZahlenWEB[i]))) {
-                                ++counterRichtige;
-                            }
-                        }
-
-
-                        // Anzahl richtiger Zahlen in TextView schreiben
-                        tvList.get(buttonNumber).setText(Integer.toString(counterRichtige));
-
-                        // Anzahl richtiger Superzahlen in TextView schreiben
-                        tvListSuperzahl.get(buttonNumber).setText(Integer.toString(counterSuperzahl));
-
-                        System.out.println("Das TextView Array hat so viele Inhalte: " + tvList.size());
-                        System.out.println("Das ist die buttonnumber (Index): " + buttonNumber);
-
-
-                        mainLayout.addView(row);
-
-
-                        line = reader.readLine();
-
-                        System.out.println("\n\nDas wurde gelesen: " + line + "\n\n" + buttonNumber);
-                        ++buttonNumber;
-                    }
-
-
-                } catch (IOException f) {
-                    System.out.println("IO Exception");
-                } finally {
-                    contents = stringBuilder.toString();
-                }
-            } catch (FileNotFoundException e) {
-                System.out.println("File not found");
-            }
-
-            System.out.println("Inhalt der File: " + contents);
-
-
-            //Connecting to Website
-
-
-
-
-            // Hier endet die If Bedingung: if (textFromWeb != null)
-            // Das Programm muss ganz durchlaufen, um zu funktionieren
-            s
-
-
-        }
-        */
 
         // Navigation Bar implementieren
         BottomNavigationView bottomNavigationView = findViewById(R.id.NavigationbarBottom);
@@ -1311,6 +720,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         bottomNavigationView.setSelectedItemId(R.id.home_nav);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
+
+        if (text_von_datum.equals("Keine Verbindung")) {
+
+            startActivity(new Intent(getApplicationContext(), LadeBalkenActivity.class));
+            overridePendingTransition(0, 0);
+        }
 
         System.out.println("Die Main ist durchgelaufen! Hurray!");
     }
@@ -1342,12 +757,35 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void displayState(){
 
         String datum_string = Singelton.instance.getDatum_text();
+
+        /* veraltet
         String zahlen_string = Singelton.instance.getZahlen_text();
         String superzahl_string = Singelton.instance.getSuperzahl_text();
+        */
 
+        Integer[] gezogeneZahlenListe = new Integer[7];
+        gezogeneZahlenListe = Singelton.instance.getZahlenListe();
+
+        int gezSuperzahl = Singelton.instance.getGezogeneSuperzahl();
+
+        // Zuweisung
         datumTextView.setText(datum_string);
+
+        gezogeneZahl1TextView.setText(gezogeneZahlenListe[1] + "");
+        gezogeneZahl2TextView.setText(gezogeneZahlenListe[2] + "");
+        gezogeneZahl3TextView.setText(gezogeneZahlenListe[3] + "");
+        gezogeneZahl4TextView.setText(gezogeneZahlenListe[4] + "");
+        gezogeneZahl5TextView.setText(gezogeneZahlenListe[5] + "");
+        gezogeneZahl6TextView.setText(gezogeneZahlenListe[6] + "");
+        gezogeneZahlSuperzahlTextView.setText(gezSuperzahl + "");
+
+
+
+        /* veraltet
         gezogeneZahlen.setText(zahlen_string);
         gezogeneSuperzahl.setText(superzahl_string);
+
+         */
     }
 
 
@@ -1368,6 +806,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+            startActivity(new Intent(MainActivity.this, Uebersicht.class));
+
             return true;
         }
 
@@ -1378,6 +819,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Context context = getApplicationContext();
 
         File jsonFile = new File(context.getFilesDir(), name);
+
+        if (!jsonFile.exists())
+            jsonFile = new File(name);
         try {
 
             FileReader fileReader = new FileReader(jsonFile);
@@ -1519,5 +963,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     }
+
 
 }

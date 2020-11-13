@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@drawable/background_mainpage"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Es wird eine Internetverbindung benötigt"
+        android:textColor="#FFFFFF"/>
+
+    <TextView
+        android:id="@+id/prozentZahl_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0 %"
+        android:textColor="#FFFFFF"
+        android:textSize="25dp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/ladebalken"/>
+
+    <ProgressBar
+        android:id="@+id/ladebalken"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40dp"/>
+
+    <TextView
+        android:id="@+id/wasGeladenWird_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:text="Lade gezogene Zahlen"
+        android:textColor="#FFFFFF"/>
+
+</RelativeLayout>

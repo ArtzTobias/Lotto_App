@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,6 +30,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,6 +38,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+
 
 public class Simulator extends Activity {
 
@@ -131,8 +136,10 @@ public class Simulator extends Activity {
     private TextView anzahlWochenTextView;
     private TextView anzahlJahreTextView;
 
-    private int gewinn = 0;
+    private double gewinn = 0.0;
+    private double erwarteterGewinn;
     private double kostenGesamt = 0.0;
+    private double summeKosten = 0.0;
     private double summe = 0.0;
 
     private int anzahlWochen = 0;
@@ -143,6 +150,13 @@ public class Simulator extends Activity {
     private int anzahlAllerTipps;
     private double kostenProTipp = 1.20;
 
+    private DecimalFormat zweiNachkommastellen;
+
+    // NavigationBar
+    private BottomNavigationView bottomNavigationView;
+
+    private RelativeLayout hauptlayout;
+
 
 
     @Override
@@ -152,6 +166,9 @@ public class Simulator extends Activity {
         setContentView(R.layout.simulator_window);
 
         final Context context = getApplicationContext();
+
+        // HauptLayout implementieren
+        hauptlayout = findViewById(R.id.HauptLayoutSimulator);
 
         // Alle Buttons und TextViews miteinander verknüpfen
         modusTextView = findViewById(R.id.modus_Vorschau_textView);
@@ -181,6 +198,7 @@ public class Simulator extends Activity {
                                 modusNummer = which;
                                 modusTextView.setText(alleModi[which]);
                                 gewinneTextView.setText(doubletoEuro(alleGewinne[which]));
+                                erwarteterGewinn = alleGewinne[which];
                             }
                         })
                 .show();
@@ -215,11 +233,17 @@ public class Simulator extends Activity {
         listeAllerTips = gson.fromJson(json, Tips[].class);
 
         // Anzahl aller Tipps errechnen
-        anzahlAllerTipps = listeAllerTips.length;
-        anzahlTippsTextView.setText(anzahlAllerTipps);
-
+        if (listeAllerTips != null) {
+            anzahlAllerTipps = listeAllerTips.length;
+            anzahlTippsTextView.setText(anzahlAllerTipps + "");
+        } else {
+            anzahlAllerTipps = 0;
+            anzahlTippsTextView.setText(anzahlAllerTipps + "");
+        }
         // Gesamtkosten berechnen
         kostenGesamt = anzahlAllerTipps * kostenProTipp;
+        summeKosten = kostenGesamt;
+        System.out.println("Die Kosten betragen: " + summeKosten);
         kostenTextView.setText(doubletoEuro(kostenGesamt));
 
 
@@ -230,7 +254,7 @@ public class Simulator extends Activity {
             @Override
             public void onClick(View v) {
 
-                if (listeAllerTips.length == 0) {
+                if (anzahlAllerTipps == 0) {
 
                     AlertDialog.Builder alertDialogKeineTipps = new AlertDialog.Builder(Simulator.this);
                     alertDialogKeineTipps
@@ -272,7 +296,7 @@ public class Simulator extends Activity {
                     killThread = false;
                     simulationsThread = new Thread(simulateNumbers);
                     simulationsThread.start();
-                    playButton.setText("PAUSE");
+                    playButton.setText("STOPP");
                 } else {
                     playButton.setActivated(false);
                     killThread = true;
@@ -286,6 +310,10 @@ public class Simulator extends Activity {
         // ListView implementieren
         listView = findViewById(R.id.listviewMyTips);
 
+        // DecimalFormat implementierer
+        zweiNachkommastellen = new DecimalFormat("#0.00");
+
+
 
 
 
@@ -297,10 +325,35 @@ public class Simulator extends Activity {
 
                 mainloopCondition = true;
 
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        bottomNavigationView.setEnabled(false);
+                        bottomNavigationView.setFocusable(false);
+                        bottomNavigationView.setFocusableInTouchMode(false);
+                        bottomNavigationView.setClickable(false);
+                        bottomNavigationView.setOnNavigationItemSelectedListener(null);
+                        bottomNavigationView.setVisibility(View.INVISIBLE);
+                        hauptlayout.setBackgroundResource(R.drawable.simulation_background_while_simulation);
+                        modusButton.setEnabled(false);
+                    }
+                });
+
 
                 // Alles zurücksetzen, falls nochmal gestartet wird
                 alleTips.clear();
+
+                // Kosten zurücksetzen
+                summeKosten = 0.0;
+                summe = erwarteterGewinn;
+
+                // Zeiten zurücksetzen
                 durchgänge = 0;
+                anzahlWochen = 0;
+                anzahlWochenTextView.setText(anzahlWochen + "");
+                anzahlJahre = 0.0;
+                anzahlJahreTextView.setText(zweiNachkommastellen.format(anzahlJahre));
+
 
                     while (mainloopCondition) {
 
@@ -308,31 +361,126 @@ public class Simulator extends Activity {
                         zufallsZahlen = gezogeneZahlen();
                         zufallsSuperzahl = zufall.nextInt(10);
 
+                        // Gewinn auf 0 setzen, da in SwitchCase der Gewinn errechnet wird
+                        gewinn = 0.0;
+
 
                         // Zahlen auf dem User Interface erscheinen lassen
 
-                        if ((durchgänge % 2000) == 0) {
-                            nummer1TextView.setText(zufallsZahlen.get(0) + "");
-                            nummer2TextView.setText(zufallsZahlen.get(1) + "");
-                            nummer3TextView.setText(zufallsZahlen.get(2) + "");
-                            nummer4TextView.setText(zufallsZahlen.get(3) + "");
-                            nummer5TextView.setText(zufallsZahlen.get(4) + "");
-                            nummer6TextView.setText(zufallsZahlen.get(5) + "");
-                            nummerSuperzahlTextView.setText(zufallsSuperzahl + "");
+                        if ((durchgänge % 500) == 0) {
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    nummer1TextView.setText(zufallsZahlen.get(0) + "");
+                                }
+                            });
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    nummer2TextView.setText(zufallsZahlen.get(1) + "");
+                                }
+                            });
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    nummer3TextView.setText(zufallsZahlen.get(2) + "");
+                                }
+                            });
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    nummer4TextView.setText(zufallsZahlen.get(3) + "");
+                                }
+                            });
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    nummer5TextView.setText(zufallsZahlen.get(4) + "");
+                                }
+                            });
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    nummer6TextView.setText(zufallsZahlen.get(5) + "");
+                                }
+                            });
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    nummerSuperzahlTextView.setText(zufallsSuperzahl + "");
+                                }
+                            });
+
+
                         }
+
+                        // Kosten anzeigen
+                        summeKosten = summeKosten + kostenGesamt;
+
+                        if (durchgänge % 100 == 0) {
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    kostenTextView.setText(doubletoEuro(summeKosten) + "");
+                                }
+                            });
+                        }
+
+
+
+                        // Summe berechnen
+                        summe = erwarteterGewinn - summeKosten;
+
+                        if (durchgänge % 100 == 0) {
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    summeTextView.setText(doubletoEuro(summe) + "");
+                                }
+                            });
+
+                            if (summe >= 0.00)
+                                summeTextView.setTextColor(Color.parseColor("#00ff00"));    // Grün
+                            else
+                                summeTextView.setTextColor(Color.parseColor("#ff0025"));    // Rot
+
+                        }
+
+
 
                         // Versuche anzeigen
 
                         anzahlVersucheTextView.setText(String.format("%,d", ++durchgänge) + "");
-                        System.out.println("Anzahl der Durchgänge: " + durchgänge);
-                        System.out.println("Ich befinde mich in der Hauptschleife");
+                        //System.out.println("Anzahl der Durchgänge: " + durchgänge);
+                        //System.out.println("Ich befinde mich in der Hauptschleife");
+
+                        // Wochen hochzählen
+                        if (durchgänge % 2 == 0) {
+                            ++anzahlWochen;
+                            anzahlWochenTextView.setText(anzahlWochen + "");
+                        }
+
+                        // Jahre hochzählen
+                        if (durchgänge % 2 == 0) {
+                            anzahlJahre = anzahlWochen / 52.1429; // Anzahl an Wochen pro Jahr
+                            anzahlJahreTextView.setText(zweiNachkommastellen.format(anzahlJahre));
+                        }
 
 
                         // Zufallszahlen werden mit getippten Zahlen verglichen
 
                         for (int i=0; i < listeAllerTips.length; i++) {
 
-                            System.out.println("Ich befinde mich in der 1. inneren Schleife");
+                            //System.out.println("Ich befinde mich in der 1. inneren Schleife");
                             // Alle Tipps lesen (1 Schleifendurchlauf ist ein Tipp)
                             nameDesTipps = listeAllerTips[i].getName();
                             nummer1 = listeAllerTips[i].getNumber1();
@@ -358,7 +506,7 @@ public class Simulator extends Activity {
                             // Prüfen, ob die jeweiligen Zahlen richtig sind
                             for (int j = 0; j < 6; j++) {
 
-                                System.out.println("Ich befinde mich in der 2. inneren Schleife");
+                                //System.out.println("Ich befinde mich in der 2. inneren Schleife");
 
                                 if (nummer1 == zufallsZahlen.get(j)) {
                                     ++countRichtigeZahlen;
@@ -409,50 +557,70 @@ public class Simulator extends Activity {
                             switch(modusNummer) {
 
                                 case 0:
+                                    gewinn = gewinnBerechnen(gewinn, countRichtigeZahlen, countRichtigeSuperzahl);
                                     tippHinzufügen = true;
                                     break;
                                 case 1:
-                                    if (countRichtigeZahlen >= 2 && countRichtigeSuperzahl == 1)
+                                    if (countRichtigeZahlen >= 2 && countRichtigeSuperzahl == 1) {
+                                        gewinn = gewinnBerechnen(gewinn, countRichtigeZahlen, countRichtigeSuperzahl);
                                         tippHinzufügen = true;
+                                    }
                                     break;
                                 case 2:
-                                    if (countRichtigeZahlen >= 3)
+                                    if (countRichtigeZahlen >= 3) {
+                                        gewinn = gewinnBerechnen(gewinn, countRichtigeZahlen, countRichtigeSuperzahl);
                                         tippHinzufügen = true;
+                                    }
                                     break;
                                 case 3:
-                                    if (countRichtigeZahlen >= 3 && countRichtigeSuperzahl == 1)
+                                    if (countRichtigeZahlen >= 3 && countRichtigeSuperzahl == 1){
+                                        gewinn = gewinnBerechnen(gewinn, countRichtigeZahlen, countRichtigeSuperzahl);
                                         tippHinzufügen = true;
+                                    }
                                     break;
                                 case 4:
-                                    if (countRichtigeZahlen >= 4)
+                                    if (countRichtigeZahlen >= 4){
+                                        gewinn = gewinnBerechnen(gewinn, countRichtigeZahlen, countRichtigeSuperzahl);
                                         tippHinzufügen = true;
+                                    }
                                     break;
                                 case 5:
-                                    if (countRichtigeZahlen >= 4 && countRichtigeSuperzahl == 1)
+                                    if (countRichtigeZahlen >= 4 && countRichtigeSuperzahl == 1){
+                                        gewinn = gewinnBerechnen(gewinn, countRichtigeZahlen, countRichtigeSuperzahl);
                                         tippHinzufügen = true;
+                                    }
                                     break;
                                 case 6:
-                                    if (countRichtigeZahlen >= 5)
+                                    if (countRichtigeZahlen >= 5){
+                                        gewinn = gewinnBerechnen(gewinn, countRichtigeZahlen, countRichtigeSuperzahl);
                                         tippHinzufügen = true;
+                                    }
                                     break;
                                 case 7:
-                                    if (countRichtigeZahlen >= 5 && countRichtigeSuperzahl == 1)
+                                    if (countRichtigeZahlen >= 5 && countRichtigeSuperzahl == 1){
+                                        gewinn = gewinnBerechnen(gewinn, countRichtigeZahlen, countRichtigeSuperzahl);
                                         tippHinzufügen = true;
+                                    }
                                     break;
                                 case 8:
-                                    if (countRichtigeZahlen == 6)
+                                    if (countRichtigeZahlen == 6){
+                                        gewinn = gewinnBerechnen(gewinn, countRichtigeZahlen, countRichtigeSuperzahl);
                                         tippHinzufügen = true;
+                                    }
                                     break;
                                 case 9:
-                                    if (countRichtigeZahlen == 6 && countRichtigeSuperzahl == 1)
+                                    if (countRichtigeZahlen == 6 && countRichtigeSuperzahl == 1){
+                                        gewinn = gewinnBerechnen(gewinn, countRichtigeZahlen, countRichtigeSuperzahl);
                                         tippHinzufügen = true;
+                                    }
                                     break;
                                 default:
                                     System.out.println("Das kann nicht sein. Modusnummer: " + modusNummer);
                                     break;
                             }
 
-                            System.out.println("Ich bin nicht mehr in Switch Case, aber immer noch in der Schleife");
+
+                            //System.out.println("Ich bin nicht mehr in Switch Case, aber immer noch in der Schleife");
 
                             if (tippHinzufügen == true){
 
@@ -480,13 +648,48 @@ public class Simulator extends Activity {
                         if (!(alleTips.isEmpty())) {
 
                             // Hier die zufallsZahlen ausgeben, da nicht bei jedem Tipp die Zahl geändert werden kann
-                            nummer1TextView.setText(zufallsZahlen.get(0) + "");
-                            nummer2TextView.setText(zufallsZahlen.get(1) + "");
-                            nummer3TextView.setText(zufallsZahlen.get(2) + "");
-                            nummer4TextView.setText(zufallsZahlen.get(3) + "");
-                            nummer5TextView.setText(zufallsZahlen.get(4) + "");
-                            nummer6TextView.setText(zufallsZahlen.get(5) + "");
-                            nummerSuperzahlTextView.setText(zufallsSuperzahl + "");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    nummer1TextView.setText(zufallsZahlen.get(0) + "");
+                                    nummer2TextView.setText(zufallsZahlen.get(1) + "");
+                                    nummer3TextView.setText(zufallsZahlen.get(2) + "");
+                                    nummer4TextView.setText(zufallsZahlen.get(3) + "");
+                                    nummer5TextView.setText(zufallsZahlen.get(4) + "");
+                                    nummer6TextView.setText(zufallsZahlen.get(5) + "");
+                                    nummerSuperzahlTextView.setText(zufallsSuperzahl + "");
+                                }
+                            });
+
+                            // Gewinn ermitteln --> der Gewinn wurde in Switch-Case ermittelt
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    gewinneTextView.setText(doubletoEuro(gewinn) + "");
+                                }
+                            });
+
+                            // Kosten ermitteln
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    kostenTextView.setText(doubletoEuro(summeKosten) + "");
+                                }
+                            });
+
+                            // Summe ermitteln mit dem neuen Gewinn
+                            summe = gewinn - summeKosten;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    summeTextView.setText(doubletoEuro(summe) + "");
+                                }
+                            });
+                            if (summe >= 0.00)
+                                summeTextView.setTextColor(Color.parseColor("#00ff00"));    // Grün
+                            else
+                                summeTextView.setTextColor(Color.parseColor("#ff0025"));    // Rot
+
 
                             System.out.println("Ich habe einen Gewinner gefunden!");
 
@@ -531,16 +734,33 @@ public class Simulator extends Activity {
                             simulationsThreadGestartet = false;
                             mainloopCondition = false;
                             playButton.setText("START");
+                            playButton.setActivated(false);
                         }
 
                         if (killThread) {
                             System.out.println("Der Nutzer hat die Simulation gestoppt --> Abbruch der Mainschleife");
                             simulationsThreadGestartet = false;
                             mainloopCondition = false;
+                            playButton.setText("START");
+                            playButton.setActivated(false);
+
                         }
                     }
 
-                System.out.println("Ich bin aus der Mainschleife gekommen");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            bottomNavigationView.setEnabled(true);
+                            bottomNavigationView.setFocusable(true);
+                            bottomNavigationView.setFocusableInTouchMode(true);
+                            bottomNavigationView.setClickable(true);
+                            bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
+                            bottomNavigationView.setVisibility(View.VISIBLE);
+                            hauptlayout.setBackgroundResource(R.drawable.simulator_background);
+                            modusButton.setEnabled(true);
+                        }
+                    });
+                    //System.out.println("Ich bin aus der Mainschleife gekommen");
                 }
         };
 
@@ -552,7 +772,7 @@ public class Simulator extends Activity {
 
 
         // Navigation Bar implementieren
-        BottomNavigationView bottomNavigationView = findViewById(R.id.NavigationbarBottom);
+        bottomNavigationView = findViewById(R.id.NavigationbarBottom);
 
         // Simulator Nav Button aktivieren
         bottomNavigationView.setSelectedItemId(R.id.simulator_nav);
@@ -646,4 +866,26 @@ public class Simulator extends Activity {
         return euroWert;
     }
 
+    public double gewinnBerechnen (double gewinn, int countRichtigeZahlen, int countRichtigeSuperzahl) {
+        if (countRichtigeZahlen == 2 && countRichtigeSuperzahl == 1)
+            gewinn = gewinn + alleGewinne[1];
+        else if (countRichtigeZahlen == 3 && countRichtigeSuperzahl == 0)
+            gewinn = gewinn + alleGewinne[2];
+        else if (countRichtigeZahlen == 3 && countRichtigeSuperzahl == 1)
+            gewinn = gewinn + alleGewinne[3];
+        else if (countRichtigeZahlen == 4 && countRichtigeSuperzahl == 0)
+            gewinn = gewinn + alleGewinne[4];
+        else if (countRichtigeZahlen == 4 && countRichtigeSuperzahl == 1)
+            gewinn = gewinn + alleGewinne[5];
+        else if (countRichtigeZahlen == 5 && countRichtigeSuperzahl == 0)
+            gewinn = gewinn + alleGewinne[6];
+        else if (countRichtigeZahlen == 5 && countRichtigeSuperzahl == 1)
+            gewinn = gewinn + alleGewinne[7];
+        else if (countRichtigeZahlen == 6 && countRichtigeSuperzahl == 0)
+            gewinn = gewinn + alleGewinne[8];
+        else if (countRichtigeZahlen == 6 && countRichtigeSuperzahl == 1)
+            gewinn = gewinn + alleGewinne[9];
+
+        return gewinn;
+    }
 }

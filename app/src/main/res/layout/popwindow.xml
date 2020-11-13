@@ -10,15 +10,15 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:background="#000000"
+        android:layout_height="match_parent">
 
 
     <RelativeLayout
         android:layout_width="fill_parent"
-       android:layout_height="fill_parent"
-       android:layout_centerHorizontal="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="parent">
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:layout_centerHorizontal="true">
 
         <EditText
             android:id="@+id/tippName"
@@ -29,20 +29,25 @@
             android:layout_gravity="center"
             android:text="Wähle einen Namen"
             android:gravity="center"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/button_default"
             android:textSize="24sp" />
 
         <LinearLayout
             android:id="@+id/textobenLayout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#000000"
             android:layout_below="@+id/tippName">
 
         <TextView
             android:id="@+id/textoben"
-            android:layout_width="232dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:gravity="center"
             android:text="Wähle 6 Zahlen aus"
+            android:textColor="#FFFFFF"
             android:textSize="24sp" />
 
         </LinearLayout>
@@ -50,7 +55,7 @@
         <LinearLayout
             android:id="@+id/line1"
             android:orientation="horizontal"
-            android:background="@android:drawable/bottom_bar"
+            android:background="#000000"
             android:paddingLeft="4.0dip"
             android:paddingTop="5.0dip"
             android:paddingRight="4.0dip"
@@ -127,7 +132,7 @@
         <LinearLayout
             android:id="@+id/line2"
             android:orientation="horizontal"
-            android:background="@android:drawable/bottom_bar"
+            android:background="#000000"
             android:paddingLeft="4.0dip"
             android:paddingTop="5.0dip"
             android:paddingRight="4.0dip"
@@ -204,7 +209,7 @@
         <LinearLayout
             android:id="@+id/line3"
             android:orientation="horizontal"
-            android:background="@android:drawable/bottom_bar"
+            android:background="#000000"
             android:paddingLeft="4.0dip"
             android:paddingTop="5.0dip"
             android:paddingRight="4.0dip"
@@ -282,7 +287,7 @@
         <LinearLayout
             android:id="@+id/line4"
             android:orientation="horizontal"
-            android:background="@android:drawable/bottom_bar"
+            android:background="#000000"
             android:paddingLeft="4.0dip"
             android:paddingTop="5.0dip"
             android:paddingRight="4.0dip"
@@ -360,7 +365,7 @@
         <LinearLayout
             android:id="@+id/line5"
             android:orientation="horizontal"
-            android:background="@android:drawable/bottom_bar"
+            android:background="#000000"
             android:paddingLeft="4.0dip"
             android:paddingTop="5.0dip"
             android:paddingRight="4.0dip"
@@ -439,7 +444,7 @@
         <LinearLayout
             android:id="@+id/line6"
             android:orientation="horizontal"
-            android:background="@android:drawable/bottom_bar"
+            android:background="#000000"
             android:paddingLeft="4.0dip"
             android:paddingTop="5.0dip"
             android:paddingRight="4.0dip"
@@ -517,7 +522,7 @@
         <LinearLayout
             android:id="@+id/line7"
             android:orientation="horizontal"
-            android:background="@android:drawable/bottom_bar"
+            android:background="#000000"
             android:paddingLeft="4.0dip"
             android:paddingTop="5.0dip"
             android:paddingRight="4.0dip"
@@ -599,13 +604,16 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/line7"
             android:layout_gravity="center"
+            android:gravity="center"
             android:text="Wähle eine Superzahl aus"
+            android:background="#000000"
+            android:textColor="#FFFFFF"
             android:textSize="24sp" />
 
         <LinearLayout
             android:id="@+id/line8"
             android:orientation="horizontal"
-            android:background="@android:drawable/bottom_bar"
+            android:background="#000000"
             android:paddingLeft="4.0dip"
             android:paddingTop="5.0dip"
             android:paddingRight="4.0dip"
@@ -667,7 +675,7 @@
         <LinearLayout
             android:id="@+id/line9"
             android:orientation="horizontal"
-            android:background="@android:drawable/bottom_bar"
+            android:background="#000000"
             android:paddingLeft="4.0dip"
             android:paddingTop="5.0dip"
             android:paddingRight="4.0dip"
@@ -729,7 +737,7 @@
         <LinearLayout
             android:id="@+id/line10"
             android:orientation="horizontal"
-            android:background="@android:drawable/bottom_bar"
+            android:background="#000000"
             android:paddingLeft="4.0dip"
             android:paddingTop="5.0dip"
             android:paddingRight="4.0dip"
@@ -743,6 +751,8 @@
                 android:layout_width="50dp"
                 android:layout_height="fill_parent"
                 android:layout_weight="1.0"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/simulation_button_start_pressed"
                 android:text="Cancel" />
 
             <Button
@@ -750,6 +760,8 @@
                 android:layout_width="50dp"
                 android:layout_height="fill_parent"
                 android:layout_weight="1.0"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/simulation_button_start_default"
                 android:text="Speichern" />
         </LinearLayout>
 

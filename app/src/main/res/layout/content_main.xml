@@ -57,6 +57,7 @@
                 android:gravity="center"
                 android:textStyle="bold"
                 android:enabled="false"
+                android:text=" ?"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/text_style_for_chosen_numbers"/>
 
@@ -68,6 +69,7 @@
                 android:gravity="center"
                 android:textStyle="bold"
                 android:enabled="false"
+                android:text=" ?"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/text_style_for_chosen_numbers"/>
 
@@ -80,6 +82,7 @@
                 android:gravity="center"
                 android:textStyle="bold"
                 android:enabled="false"
+                android:text=" ?"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/text_style_for_chosen_numbers"/>
 
@@ -92,6 +95,7 @@
                 android:gravity="center"
                 android:textStyle="bold"
                 android:enabled="false"
+                android:text=" ?"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/text_style_for_chosen_numbers"/>
 
@@ -104,6 +108,7 @@
                 android:gravity="center"
                 android:textStyle="bold"
                 android:enabled="false"
+                android:text=" ?"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/text_style_for_chosen_numbers"/>
 
@@ -116,6 +121,7 @@
                 android:gravity="center"
                 android:textStyle="bold"
                 android:enabled="false"
+                android:text=" ?"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/text_style_for_chosen_numbers"/>
 
@@ -149,6 +155,7 @@
                 android:gravity="center"
                 android:textStyle="bold"
                 android:enabled="false"
+                android:text=" ?"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/text_style_for_chosen_superzahl"/>
 
@@ -192,7 +199,8 @@
             android:id="@+id/listviewMyTips"
             android:layout_width="match_parent"
             android:orientation="vertical"
-            android:layout_height="wrap_content" />
+            android:background="@drawable/background_mainpage_listview"
+            android:layout_height="match_parent" />
 
     </fragment>
 

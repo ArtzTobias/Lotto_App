@@ -11,6 +11,9 @@ public class Singelton {
     private Integer[] zahlenListe = new Integer[7];
     private int gezogeneSuperzahl;
 
+    private boolean thread1_fertig = false;
+    private boolean thread2_fertig = false;
+
 
     public static Singelton getInstance() {
         return instance;
@@ -61,5 +64,22 @@ public class Singelton {
     public void setSuperzahl_text(String superzahl_text) {
         this.superzahl_text = superzahl_text;
     }
+
+    public void setThread1_fertig(boolean wert) {
+        thread1_fertig = wert;
+    }
+
+    public void setThread2_fertig(boolean wert2) {
+        thread2_fertig = wert2;
+    }
+
+    public boolean getThread1_fertig() {
+        return thread1_fertig;
+    }
+
+    public boolean getThread2_fertig() {
+        return thread2_fertig;
+    }
+
 
 }

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_mainpage"
+    android:stretchColumns="1">
+
+
+    <TableRow>
+        <TextView
+            android:layout_column="1"
+            android:text="Übersicht"
+            android:gravity="center"
+            android:textSize="30dp"
+            android:textColor="#FFFFFF"/>
+    </TableRow>
+
+    <TableRow>
+        <TextView
+            android:text="Anzahl Richtige"
+            android:textColor="#FFFFFF"
+            android:gravity="left"/>
+        <TextView
+            android:text="Gewinn"
+            android:textColor="#FFFFFF"
+            android:gravity="center"/>
+        <TextView
+            android:text="Wahrscheinlichkeit"
+            android:textColor="#FFFFFF"
+            android:gravity="right"/>
+    </TableRow>
+
+    <TableRow>
+        <TextView
+            android:layout_column="1"
+            android:textColor="#FFFFFF"
+            android:text="(Durchschnitt)"
+            android:gravity="center" />
+    </TableRow>
+
+
+    <TableRow
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <TextView
+            android:text="2 Richtige + SZ"
+            android:textColor="#FFFFFF"
+            android:gravity="left"/>
+        <TextView
+            android:text="5,00€"
+            android:textColor="#FFFFFF"
+            android:gravity="center"/>
+        <TextView
+            android:text="1,32%"
+            android:textColor="#FFFFFF"
+            android:gravity="right"/>
+    </TableRow>
+
+
+    <TableRow
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <TextView
+            android:text="3 Richtige"
+            android:textColor="#FFFFFF"
+            android:gravity="left"/>
+        <TextView
+            android:text="10,48€"
+            android:textColor="#FFFFFF"
+            android:gravity="center"/>
+        <TextView
+            android:text="1,59%"
+            android:textColor="#FFFFFF"
+            android:gravity="right"/>
+    </TableRow>
+
+
+    <TableRow
+        android:layout_height="0dp"
+        android:textColor="#FFFFFF"
+        android:layout_weight="1">
+        <TextView
+            android:text="3 Richtige + SZ"
+            android:textColor="#FFFFFF"
+            android:gravity="left"/>
+        <TextView
+            android:text="20,95€"
+            android:textColor="#FFFFFF"
+            android:gravity="center"/>
+        <TextView
+            android:text="0,18%"
+            android:textColor="#FFFFFF"
+            android:gravity="right"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_height="0dp"
+        android:textColor="#FFFFFF"
+        android:layout_weight="1">
+        <TextView
+            android:text="4 Richtige"
+            android:textColor="#FFFFFF"
+            android:gravity="left"/>
+        <TextView
+            android:text="42,42€"
+            android:textColor="#FFFFFF"
+            android:gravity="center"/>
+        <TextView
+            android:text="0,087%"
+            android:textColor="#FFFFFF"
+            android:gravity="right"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <TextView
+            android:text="4 Richtige + SZ"
+            android:textColor="#FFFFFF"
+            android:gravity="left"/>
+        <TextView
+            android:text="190,90€"
+            android:textColor="#FFFFFF"
+            android:gravity="center"/>
+        <TextView
+            android:text="0,0097%"
+            android:textColor="#FFFFFF"
+            android:gravity="right"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <TextView
+            android:text="5 Richtige"
+            android:textColor="#FFFFFF"
+            android:gravity="left"/>
+        <TextView
+            android:text="3.340,68€"
+            android:textColor="#FFFFFF"
+            android:gravity="center"/>
+        <TextView
+            android:text="0,0017%"
+            android:textColor="#FFFFFF"
+            android:gravity="right"/>
+    </TableRow>
+
+
+    <TableRow
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <TextView
+            android:text="5 Richtige + SZ"
+            android:textColor="#FFFFFF"
+            android:gravity="left"/>
+        <TextView
+            android:text="10.022,03€"
+            android:textColor="#FFFFFF"
+            android:gravity="center"/>
+        <TextView
+            android:text="0,00018%"
+            android:textColor="#FFFFFF"
+            android:gravity="right"/>
+    </TableRow>
+
+
+    <TableRow
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <TextView
+            android:text="6 Richtige"
+            android:textColor="#FFFFFF"
+            android:gravity="left"/>
+        <TextView
+            android:text="574.596,53€"
+            android:textColor="#FFFFFF"
+            android:gravity="center"/>
+        <TextView
+            android:text="0,0000064%"
+            android:textColor="#FFFFFF"
+            android:gravity="right"/>
+    </TableRow>
+
+
+    <TableRow
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <TextView
+            android:text="6 Richtige + SZ"
+            android:textColor="#FFFFFF"
+            android:gravity="left"/>
+        <TextView
+            android:text="8.949.642,24€"
+            android:textColor="#FFFFFF"
+            android:gravity="center"/>
+        <TextView
+            android:text="0,00000072%"
+            android:textColor="#FFFFFF"
+            android:gravity="right"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <Button
+            android:id="@+id/uebersichtButton"
+            android:text="OK"
+            android:textColor="#FFFFFF"
+            android:layout_column="1"
+            android:background="@drawable/uebersicht_button_background"/>
+    </TableRow>
+
+
+
+
+
+</TableLayout>
