@@ -41,13 +41,6 @@ public class LadeBalkenActivity extends Activity {
                     if (Singelton.instance.getThread1_fertig()) {
                         //progressAnimation_Thread1();
 
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                information.setText("Die gezogenen Zahlen konnten erfolgreich geladen werden.");
-                            }
-                        });
-
                         break;
                     }
 
@@ -80,7 +73,7 @@ public class LadeBalkenActivity extends Activity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                information.setText("Die Tippliste wurde erfolgreich geladen.");
+                                information.setText("Die gezogene Zahlen und Listen werden geladen...");
                             }
                         });
 

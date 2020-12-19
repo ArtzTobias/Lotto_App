@@ -12,6 +12,10 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -241,6 +245,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
+
+        // SDK initialisieren
+        MobileAds.initialize(this);
+
+        // Werbungsbanner initialisieren
+        AdView adView = (AdView) findViewById(R.id.adView_mainScreen);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        adView.loadAd(adRequest);
+
+
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -962,6 +980,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
 
+    }
+
+    @Override
+    public  void onBackPressed() {
+        moveTaskToBack(true);
     }
 
 

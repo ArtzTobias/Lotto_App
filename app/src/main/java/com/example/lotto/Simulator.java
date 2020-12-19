@@ -21,6 +21,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -166,6 +168,14 @@ public class Simulator extends Activity {
         setContentView(R.layout.simulator_window);
 
         final Context context = getApplicationContext();
+
+        // Werbungsbanner initialisieren
+        AdView adView = (AdView) findViewById(R.id.adView_simulatorScreen);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        adView.loadAd(adRequest);
+
 
         // HauptLayout implementieren
         hauptlayout = findViewById(R.id.HauptLayoutSimulator);

@@ -37,10 +37,12 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class Pop extends Activity {
 
-    //VideoView videoviewbutton1;
+    private String[] alleNamen = {"Zeus", "Hera", "Hades", "Poseidon", "Demeter", "Ares", "Hephaistos", "Apollon", "Hermes", "Athene", "Aphrodite", "Dionysos", "Herakles"};
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,6 +57,13 @@ public class Pop extends Activity {
         int height = dm.heightPixels;
 
         getWindow().setLayout(width, height);
+
+        //zufallszahl generieren für name
+        Random random = new Random();
+        int limit = alleNamen.length;
+
+        int zufallszahl = random.nextInt(limit);
+
 
 
 
@@ -80,7 +89,7 @@ public class Pop extends Activity {
         String[] mythologie = new String[100];
 
         final EditText tippname = findViewById(R.id.tippName);
-        tippname.setText("Medusa");
+        tippname.setText(alleNamen[zufallszahl]);
 
         /* Initialisierung von
                 Cancel Button
@@ -245,6 +254,7 @@ public class Pop extends Activity {
 
                     myIntent.putExtra("key", "Zahlen: " + chosenNumbers.get(0) + "," + chosenNumbers.get(1) + "," + chosenNumbers.get(2) + "," + chosenNumbers.get(3) + "," + chosenNumbers.get(4) + "," + chosenNumbers.get(5) + "   Superzahl: " + supernumber[0]);
                     Pop.this.startActivity(myIntent);
+                    finish();
 
                     /*
 

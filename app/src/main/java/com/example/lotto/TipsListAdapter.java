@@ -140,6 +140,8 @@ public class TipsListAdapter extends ArrayAdapter<TipsUebersicht> {
 
         if (boolnummerSuperzahl) {
             textSuperzahlRichtig = "richtig";
+        } else {
+            textSuperzahlRichtig = "falsch";
         }
         TextView richtigeSuperzahl = convertView.findViewById(R.id.textSuperzahl);
         richtigeSuperzahl.setText("Superzahl: " + textSuperzahlRichtig);
