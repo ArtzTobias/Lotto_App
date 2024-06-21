@@ -1,5 +1,6 @@
 package com.example.lotto;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
@@ -25,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.text.Layout;
@@ -247,7 +249,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setSupportActionBar(toolbar);
 
 
-
         // SDK initialisieren
         MobileAds.initialize(this);
 
@@ -304,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         final WebItems webItems = new WebItems();
 
-        webItems.execute("https://www.lotto.de/lotto-6aus49/lottozahlen");
+        webItems.execute("https://www.google.com/search?q=Lotto+6+aus+49&sca_esv=453f36eb1da0db3c&sca_upv=1&biw=1920&bih=927&sxsrf=ADLYWIIit8-4vzH3m_Z5Dlaf9MeBfLn0EQ%3A1718892851633&ei=Mzl0ZpGgJr6Wxc8P5rCV8Ac&ved=0ahUKEwjRhdDuruqGAxU-S_EDHWZYBX4Q4dUDCBA&uact=5&oq=Lotto+6+aus+49&gs_lp=Egxnd3Mtd2l6LXNlcnAiDkxvdHRvIDYgYXVzIDQ5MgoQIxiABBgnGIoFMhAQABiABBixAxiDARgUGIcCMgsQABiABBixAxiDATILEAAYgAQYsQMYgwEyCxAAGIAEGLEDGIMBMggQABiABBixAzILEAAYgAQYsQMYgwEyBRAAGIAEMgUQABiABDIFEAAYgARItxFQhQdYhBBwAXgBkAEAmAFioAHfBaoBATm4AQPIAQD4AQGYAgqgAoUGwgIKEAAYsAMY1gQYR8ICDRAAGIAEGLADGEMYigXCAgoQABiABBgUGIcCwgIIEAAYgAQYywGYAwCIBgGQBgqSBwM4LjKgB5hB&sclient=gws-wiz-serp");
 
 
         //Thread hinzufügen, der die Daten ausliest
@@ -329,6 +330,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 //System.out.println("WebText von MainActivity: " + textfromWeb);
                 System.out.println("WebText von MainActivity (Länge): " + textfromWeb.length());
+                //System.out.println(textfromWeb);
 
                 String regex1 = "\\d{2}" + "\\p{Punct}" + "\\d{2}" + "\\p{Punct}" + "\\d{4}";
 
@@ -363,6 +365,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 // String Nr1. für die File4
 
+                dayOfTheWeek = translateDay(dayOfTheWeek);
+
                 datum_und_Tag_WEB = "Ziehung vom " + dayOfTheWeek + ", " + datumZiehung;
 
                 // Datum im Singleton speichern
@@ -387,15 +391,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Arrays.fill(storage, Boolean.FALSE);
 
 
+                String textGezogeneZahlen = getGezogeneZahlenPart(textfromWeb);
                 for (int i = 0; i < 50; i++) {
-                    if (textfromWeb.contains("LottoBall__circle\">" + i + "<")) {
+                    if (textGezogeneZahlen.contains(">" + i + "<")) {
                         System.out.println("Die gezogene Zahl ist: " + i);
                         storage[i] = true;
 
                     }
                 }
+                String textSuperzahl = getSuperzahlPart(textfromWeb);
                 for (int i = 0; i < 10; i++) {
-                    if (textfromWeb.contains("LottoBall__circle\">" + i + "</span></div></div></div>")) {
+                    if (textSuperzahl.contains(">" + i + "<")) {
                         System.out.println("Die Superzahl ist: " + i);
                         superzahl = i;
                     }
@@ -987,5 +993,44 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         moveTaskToBack(true);
     }
 
+    public String translateDay(String day){
+        if (day.equals("Saturday"))
+            return "Samstag";
+        if (day.equals("Wednesday"))
+            return "Mittwoch";
+        return day;
+    }
 
+    public String cutText(String text, int index){
+        StringBuilder newText = new StringBuilder();
+
+        for(int j = index; j < text.length(); j++){
+            newText.append(text.charAt(j));
+        }
+
+        return newText.toString();
+    }
+
+    public String cutTextStartEnd(String text, int indexStart, int indexEnd){
+
+        StringBuilder textCutted = new StringBuilder();
+
+        for(int j = indexStart; j < indexEnd; j++){
+            textCutted.append(text.charAt(j));
+        }
+
+        return  textCutted.toString();
+    }
+
+    public String getGezogeneZahlenPart(String text){
+        int indexStart = text.indexOf("<div class=\"MDTDab\">");
+        int indexEnd = text.indexOf("<span class=\"zSMazd ZVkP3\"");
+        return cutTextStartEnd(text, indexStart, indexEnd);
+    }
+
+    public String getSuperzahlPart(String text){
+        int indexStart = text.indexOf("<span class=\"zSMazd ZVkP3\"");
+        int indexEnd = text.indexOf("<svg focusable=\"false\"");
+        return cutTextStartEnd(text, indexStart, indexEnd);
+    }
 }
